@@ -38,7 +38,7 @@ networks:
   dnpm:
     driver: bridge
     driver_opts:
-      com.docker.network.bridge.name: authup
+      com.docker.network.bridge.name: dnpm
     ipam:
       driver: default
       config:
