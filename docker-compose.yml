@@ -1,0 +1,45 @@
+version: '3.8'
+
+volumes:
+  authup:
+
+services:
+  authup:
+    image: authup/authup:latest
+    pull_policy: always
+    container_name: server-core
+    restart: unless-stopped
+    volumes:
+      # Docker managed volume
+      - authup:/usr/src/writable
+      # storage in mounted volume
+      #- ./writable:/usr/src/writable
+    ports:
+      - "4001:3000"
+    command: server/core start
+    environment:
+      - PUBLIC_URL=https://dnpm.bwhealthcloud.de/auth/ #adjust
+    networks:
+      dnpm:
+
+  portal:
+    image: ghcr.io/kohlbacherlab/dnpm-dip-portal:latest
+    pull_policy: always
+    container_name: portal
+    restart: unless-stopped
+    environment:
+      - NUXT_PUBLIC_API_URL=https://dnpm.bwhealthcloud.de/api/
+    ports:
+      - "4000:3000"
+    networks:
+      dnpm:
+
+networks:
+  dnpm:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: authup
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.23.1.0/24
