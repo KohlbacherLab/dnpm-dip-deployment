@@ -10,15 +10,12 @@ services:
     container_name: server-core
     restart: unless-stopped
     volumes:
-      # Docker managed volume
       - authup:/usr/src/writable
-      # storage in mounted volume
-      #- ./writable:/usr/src/writable
     ports:
       - "4001:3000"
     command: server/core start
     environment:
-      - PUBLIC_URL=https://dnpm.bwhealthcloud.de/auth/ #adjust
+      - PUBLIC_URL=${AUTHUP_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/auth/}
     networks:
       dnpm:
 
@@ -28,7 +25,7 @@ services:
     container_name: portal
     restart: unless-stopped
     environment:
-      - NUXT_PUBLIC_API_URL=https://dnpm.bwhealthcloud.de/api/
+      - NUXT_PUBLIC_API_URL=${PORTAL_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/api/}
     ports:
       - "4000:3000"
     networks:
