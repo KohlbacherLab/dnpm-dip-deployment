@@ -31,6 +31,24 @@ services:
     networks:
       dnpm:
 
+  backend:
+    image: ghcr.io/kohlbacherlab/dnpm-dip-backend:latest
+    # Optionally set system UserID with corresponding access permissions to data persistence directory
+    #user: "UserID"
+    ports:
+      - "9000:9000"
+    environment:
+      #RD_RANDOM_DATA: 50
+      #MTB_RANDOM_DATA: 50
+      #HOST_BASEURL: "http://localhost:9000"
+      #CONNECTOR_TYPE: "peer2peer"   # "broker" (default) | "peer2peer"
+    volumes:
+      - /PATH/TO/CONFIG_DIR:/dnpm_config     #TODO
+      - /PATH/TO/PERSISTENCE_DIR:/dnpm_data  #TODO
+    networks:
+      dnpm:
+
+
 networks:
   dnpm:
     driver: bridge
