@@ -16,6 +16,8 @@ services:
     command: server/core start
     environment:
       - PUBLIC_URL=${AUTHUP_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/auth/}
+      - ROBOT_ADMIN_ENABLED=true
+      - ROBOT_ADMIN_SECRET=${AUTHUP_SECRET:-start123}
     networks:
       dnpm:
 
@@ -42,6 +44,7 @@ services:
       - MTB_RANDOM_DATA=50
       - HOST_BASEURL=${BACKEND_PUBLIC_URL:-http://localhost:9000}
       - CONNECTOR_TYPE=peer2peer   # "broker" (default) | "peer2peer"
+      - AUTHUP_SECRET=${AUTHUP_SECRET:-start123}
     volumes:
       - /PATH/TO/CONFIG_DIR:/dnpm_config     #TODO
       - /PATH/TO/PERSISTENCE_DIR:/dnpm_data  #TODO
