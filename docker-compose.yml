@@ -40,7 +40,7 @@ services:
     environment:
       - RD_RANDOM_DATA=50
       - MTB_RANDOM_DATA=50
-      - HOST_BASEURL=${BACKEND_PUBLIC_URL:http://localhost:9000}
+      - HOST_BASEURL=${BACKEND_PUBLIC_URL:-http://localhost:9000}
       - CONNECTOR_TYPE=peer2peer   # "broker" (default) | "peer2peer"
     volumes:
       - /PATH/TO/CONFIG_DIR:/dnpm_config     #TODO
