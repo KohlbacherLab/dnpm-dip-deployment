@@ -18,6 +18,7 @@ services:
       - PUBLIC_URL=${AUTHUP_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/auth/}
       - ROBOT_ADMIN_ENABLED=true
       - ROBOT_ADMIN_SECRET=${AUTHUP_SECRET:-start123}
+      - ROBOT_ADMIN_SECRET_RESET=true
     networks:
       dnpm:
 
