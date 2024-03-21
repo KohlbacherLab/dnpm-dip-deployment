@@ -12,7 +12,7 @@ services:
     volumes:
       - authup:/usr/src/writable
     ports:
-      - "4001:3000"
+      - ${AUTHUP_PUBLIC_PORT:-4001}:3000
     command: server/core start
     environment:
       - PUBLIC_URL=${AUTHUP_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/auth/}
@@ -27,7 +27,7 @@ services:
     environment:
       - NUXT_PUBLIC_API_URL=${PORTAL_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/api/}
     ports:
-      - "4000:3000"
+      - ${PORTAL_PUBLIC_PORT:-4000}:3000
     networks:
       dnpm:
 
@@ -36,12 +36,12 @@ services:
     # Optionally set system UserID with corresponding access permissions to data persistence directory
     #user: "UserID"
     ports:
-      - "9000:9000"
+      - ${BACKEND_PUBLIC_PORT:-9000}:9000
     environment:
-      #RD_RANDOM_DATA: 50
-      #MTB_RANDOM_DATA: 50
-      #HOST_BASEURL: "http://localhost:9000"
-      #CONNECTOR_TYPE: "peer2peer"   # "broker" (default) | "peer2peer"
+      - RD_RANDOM_DATA=50
+      - MTB_RANDOM_DATA=50
+      - HOST_BASEURL=${BACKEND_PUBLIC_URL:http://localhost:9000}
+      - CONNECTOR_TYPE=peer2peer   # "broker" (default) | "peer2peer"
     volumes:
       - /PATH/TO/CONFIG_DIR:/dnpm_config     #TODO
       - /PATH/TO/PERSISTENCE_DIR:/dnpm_data  #TODO
