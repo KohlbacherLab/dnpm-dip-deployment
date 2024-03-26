@@ -20,6 +20,8 @@ services:
       - authup:/usr/src/writable
     ports:
       - ${AUTHUP_PUBLIC_PORT:-4001}:3000
+    depends_on:
+      - mysql
     command: server/core start
     environment:
       - PUBLIC_URL=${AUTHUP_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/auth/}
@@ -73,4 +75,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.23.1.0/24
+        - subnet: 172.50.1.0/24
