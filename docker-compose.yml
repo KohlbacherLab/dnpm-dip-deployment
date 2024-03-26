@@ -4,10 +4,17 @@ volumes:
   authup:
 
 services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-start123}
+    networks:
+      dnpm:
+
   authup:
     image: authup/authup:latest
     pull_policy: always
-    container_name: server-core
     restart: unless-stopped
     volumes:
       - authup:/usr/src/writable
@@ -19,6 +26,11 @@ services:
       - ROBOT_ADMIN_ENABLED=true
       - ROBOT_ADMIN_SECRET=${AUTHUP_SECRET:-start123}
       - ROBOT_ADMIN_SECRET_RESET=true
+      - DB_TYPE=mysql
+      - DB_HOST=mysql
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD:-start123}
+      - DB_DATABASE=auth
     networks:
       dnpm:
 
