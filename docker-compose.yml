@@ -24,7 +24,8 @@ services:
       - mysql
     command: server/core start
     environment:
-      - PUBLIC_URL=${AUTHUP_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/auth/}
+      - PUBLIC_URL=${BASE_URL}/auth/
+        #      - PUBLIC_URL=${AUTHUP_PUBLIC_URL:-${BASE_URL}/auth/}
       - ROBOT_ADMIN_ENABLED=true
       - ROBOT_ADMIN_SECRET=${AUTHUP_SECRET:-start123}
       - ROBOT_ADMIN_SECRET_RESET=true
@@ -42,7 +43,8 @@ services:
     container_name: portal
     restart: unless-stopped
     environment:
-      - NUXT_PUBLIC_API_URL=${PORTAL_PUBLIC_URL:-https://dnpm.bwhealthcloud.de/api/}
+      - NUXT_PUBLIC_API_URL=${BASE_URL}/api/
+        #      - NUXT_PUBLIC_API_URL=${PORTAL_PUBLIC_URL:-${BASE_URL}/api/}
     ports:
       - ${PORTAL_PUBLIC_PORT:-4000}:3000
     networks:
@@ -57,12 +59,13 @@ services:
     environment:
       - RD_RANDOM_DATA=${BACKEND_RD_RANDOM_DATA:--1}
       - MTB_RANDOM_DATA=${BACKEND_MTB_RANDOM_DATA:--1}
-      - HATEOAS_HOST=${BACKEND_HATEOAS_HOST:-http://localhost:9000}
+      - HATEOAS_HOST=${BASE_URL}
+        #      - HATEOAS_HOST=${BACKEND_HATEOAS_HOST:-${BASE_URL}}
       - CONNECTOR_TYPE=${BACKEND_CONNECTOR_TYPE:-broker}
       - AUTHUP_URL=${BACKEND_AUTHUP_URL:-robot://system:${AUTHUP_SECRET:-start123}@http://authup:3000}
     volumes:
-      - /PATH/TO/CONFIG_DIR:/dnpm_config     #TODO
-      - /PATH/TO/PERSISTENCE_DIR:/dnpm_data  #TODO
+      - /PATH/TO/CONFIG_DIR:/dnpm_config
+      - /PATH/TO/PERSISTENCE_DIR:/dnpm_data
     networks:
       dnpm:
 
