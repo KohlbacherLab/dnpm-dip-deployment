@@ -58,6 +58,7 @@ services:
     ports:
       - ${BACKEND_PUBLIC_PORT:-9000}:9000
     environment:
+      - LOCAL_SITE=${BACKEND_LOCAL_SITE}
       - RD_RANDOM_DATA=${BACKEND_RD_RANDOM_DATA:--1}
       - MTB_RANDOM_DATA=${BACKEND_MTB_RANDOM_DATA:--1}
       - HATEOAS_HOST=${BASE_URL}
