@@ -44,6 +44,7 @@ services:
     restart: unless-stopped
     environment:
       - NUXT_PUBLIC_API_URL=${BASE_URL}/api/
+      - NUXT_PUBLIC_AUTHUP_URL=${BASE_URL}/auth/
         #      - NUXT_PUBLIC_API_URL=${PORTAL_PUBLIC_URL:-${BASE_URL}/api/}
     ports:
       - ${PORTAL_PUBLIC_PORT:-4000}:3000
