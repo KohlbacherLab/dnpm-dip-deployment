@@ -17,7 +17,7 @@ services:
     pull_policy: always
     restart: unless-stopped
     volumes:
-      - authup:/usr/src/writable
+      - authup:/usr/src/app/writable
     ports:
       - ${AUTHUP_PUBLIC_PORT:-4001}:3000
     depends_on:
