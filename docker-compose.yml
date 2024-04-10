@@ -58,7 +58,7 @@ services:
     # Optionally set system UserID with corresponding access permissions to data persistence directory
     #user: "UserID"
     environment:
-      - LOCAL_SITE=${BACKEND_LOCAL_SITE}
+      - LOCAL_SITE=${BACKEND_LOCAL_SITE}   # Format: {Site-ID}:{Site-name}, e.g. UKT:Tübingen
       - RD_RANDOM_DATA=${BACKEND_RD_RANDOM_DATA:--1}
       - MTB_RANDOM_DATA=${BACKEND_MTB_RANDOM_DATA:--1}
       - HATEOAS_HOST=${BASE_URL:-http://localhost:3000}
@@ -69,6 +69,7 @@ services:
       - backend-data:/dnpm_data
     networks:
       dnpm:
+
   nginx:
     image: nginxproxy/nginx-proxy:alpine
     ports:

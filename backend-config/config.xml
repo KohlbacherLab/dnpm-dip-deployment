@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+
+  <!-- PEER-TO-PEER Connector Config Template -->	
+  <Connector>
+
+    <!-- For each Peer: Site ID and name (according to defined list), and baseUrl -->
+    <Peer id="UKBsp" name="Beispielhausen" baseUrl="..."/>
+    <Peer id="UKBrl" name="Berlichingen"   baseUrl="..."/>
+
+    <!-- OPTIONAL request timeout (in seconds), Default 10 s -->
+    <Timeout seconds="30"/>
+  </Connector>
+
+
+
+  <!-- BROKER Connector Config Template -->	
+  <Connector>
+
+    <!-- Base URL to DNPM-Broker-Proxy -->
+    <Broker baseURL="http://localhost"/>
+     
+    <!-- OPTIONAL request timeout (in seconds), Default 10 s -->
+    <Timeout seconds="30"/>
+
+    <!-- OPTIONAL, for periodic auto-update of site list from broker: Period (in minutes) -->
+    <UpdatePeriod minutes="30"/>
+  </Connector>
+
+</Config>
