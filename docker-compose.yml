@@ -2,11 +2,17 @@ version: '3.8'
 
 volumes:
   authup:
+  backend-data:
 
 services:
   mysql:
     image: mysql:latest
     restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-start123}
     networks:
@@ -18,13 +24,12 @@ services:
     restart: unless-stopped
     volumes:
       - authup:/usr/src/app/writable
-    ports:
-      - ${AUTHUP_PUBLIC_PORT:-4001}:3000
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     command: server/core start
     environment:
-      - PUBLIC_URL=${BASE_URL}/auth/
+      - PUBLIC_URL=${BASE_URL:-http://localhost:3000}/auth/
       - ROBOT_ADMIN_ENABLED=true
       - ROBOT_ADMIN_SECRET=${AUTHUP_SECRET:-start123}
       - ROBOT_ADMIN_SECRET_RESET=true
@@ -42,32 +47,37 @@ services:
     container_name: portal
     restart: unless-stopped
     environment:
-      - NUXT_PUBLIC_API_URL=${BASE_URL}/api/
-      - NUXT_PUBLIC_AUTHUP_URL=${BASE_URL}/auth/
-    ports:
-      - ${PORTAL_PUBLIC_PORT:-4000}:3000
+      - NUXT_PUBLIC_API_URL=${BASE_URL:-http://localhost:3000}/api/
+      - NUXT_PUBLIC_AUTHUP_URL=${BASE_URL:-http://localhost:3000}/auth/
     networks:
       dnpm:
 
   backend:
+    container_name: backend
     image: ghcr.io/kohlbacherlab/dnpm-dip-backend:latest
     # Optionally set system UserID with corresponding access permissions to data persistence directory
     #user: "UserID"
-    ports:
-      - ${BACKEND_PUBLIC_PORT:-9000}:9000
     environment:
       - LOCAL_SITE=${BACKEND_LOCAL_SITE}
       - RD_RANDOM_DATA=${BACKEND_RD_RANDOM_DATA:--1}
       - MTB_RANDOM_DATA=${BACKEND_MTB_RANDOM_DATA:--1}
-      - HATEOAS_HOST=${BASE_URL}
+      - HATEOAS_HOST=${BASE_URL:-http://localhost:3000}
       - CONNECTOR_TYPE=${BACKEND_CONNECTOR_TYPE:-broker}
       - AUTHUP_URL=${BACKEND_AUTHUP_URL:-robot://system:${AUTHUP_SECRET:-start123}@http://authup:3000}
     volumes:
-      - /PATH/TO/CONFIG_DIR:/dnpm_config
-      - /PATH/TO/PERSISTENCE_DIR:/dnpm_data
+      - ./backend-config:/dnpm_config
+      - backend-data:/dnpm_data
     networks:
       dnpm:
-
+  nginx:
+    image: nginxproxy/nginx-proxy:alpine
+    ports:
+      - ${PUBLIC_PORT:-3000}:3000
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+    networks:
+      dnpm:
 
 networks:
   dnpm:
