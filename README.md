@@ -5,7 +5,6 @@
 
 
 
-
 ## Pre-requisites
 
 * Docker / Docker Compose
@@ -21,11 +20,11 @@
 TODO Overview Diagrams
 
 
-## Installation
+## Set-up
 
 ### Docker Compose
 
-A template `docker-compose.yml` is available [here](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/docker-compose.yml)
+A template [`docker-compose.yml`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/docker-compose.yml) is available.
 
 Basic configuration occurs via environment variables, for most of which default values are pre-defined.
 The only mandatory variable that MUST be set in file `.env` (see also [here](https://docs.docker.com/compose/environment-variables/set-environment-variables/)) is your DNPM Site (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2613900/DNPM+DIP+-+Broker-Verbindungen) for the overview list of Site IDs and names):
@@ -54,7 +53,7 @@ Templates for these are available [here](https://github.com/KohlbacherLab/dnpm-d
 They must be placed in the directory bound to docker volume `/dnpm_config` in `docker-compose.yml`.
 
 
-### Persistence
+#### Persistence
 
 Data persistence by the backend (currently) uses the file system. Bind the directory meant for this purpose to the backend service's docker volume `/dnpm_data`. 
 Depending on the permission set on this directory, you might have to explicitly set the system user ID for the docker process running the backend (see `backend.user` in `docker-compose.yml`).
@@ -62,16 +61,18 @@ Depending on the permission set on this directory, you might have to explicitly 
 
 #### Play HTTP Server
 
-The Play HTTP Server the backend application runs in is configured via file `production.conf`. The template provides defaults for all required settings.
+The Play HTTP Server the backend application runs in is configured via file [`production.conf`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/production.conf). The template provides defaults for all required settings.
 
 #### Logging
 
-Logging is based on [SLF4J](https://slf4j.org/). The SLF4J implementation used by the Play Framework is [Logback](https://logback.qos.ch/), which is configured via file `logback.xml`.
+Logging is based on [SLF4J](https://slf4j.org/). The SLF4J implementation used by the Play Framework is [Logback](https://logback.qos.ch/), which is configured via file [`logback.xml`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/logback.xml).
 The default settings in the template define a daily rotating log file stored in sub-folder `/logs` of the docker volume bound for persistence (see above).
+You might consider removing/deactivating the logging [appender to STDOUT](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/logback.xml#L30)
+
 
 #### Application Config
 
-The Backend application itself is configured via `config.xml`. The main configuration item is the type of Connector used for communication with external peer DNPM:DIP nodes.
+The Backend application itself is configured via [`config.xml`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/config.xml). The main configuration item is the type of Connector used for communication with external peer DNPM:DIP nodes.
 This file's template shows example configurations for both possible connector types. Simply delete the one _not_ applicable to your case.
 
 ##### Broker Connector
