@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
   authup:
+  mysql:
   backend-data:
 
 services:
@@ -14,7 +15,10 @@ services:
       timeout: 5s
       retries: 5
     environment:
+      MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-start123}
+    volumes:
+      - mysql:/var/lib/mysql
     networks:
       dnpm:
 
@@ -77,13 +81,12 @@ services:
     volumes:
       - './nginx_tls.conf:/etc/nginx/nginx.conf'
       - '/var/run/docker.sock:/tmp/docker.sock:ro'
-      - '/PATH/TO/dnpm-ca-cert.pem:/etl/ssl/certs/dnpm-ca-cert.pem'         # DNPM CA as trusted CA for Client certs in mtutal TLS
+      - './dnpm-ca-cert.pem:/etl/ssl/certs/dnpm-ca-cert.pem'         # DNPM CA as trusted CA for Client certs in mtutal TLS
       - '/PATH/TO/dnpm-server-cert.pem:/etl/ssl/certs/dnpm-server-cert.pem' # Server certificate
       - '/PATH/TO/dnpm-server-key.pem:/etl/ssl/certs/dnpm-server-key.pem'   # Server private key
       - '/PATH/TO/dnpm-client-cert.pem:/etl/ssl/certs/dnpm-client-cert.pem' # Client certificate
       - '/PATH/TO/dnpm-client-key.pem:/etl/ssl/certs/dnpm-client-key.pem'   # Client private key
       - '/PATH/TO/ca-cert-chain.pem:/etl/ssl/certs/ca-cert-chain.pem'       # Chain of Trusted CAs for remote host verification
-        ....
     networks:
       dnpm:
 
