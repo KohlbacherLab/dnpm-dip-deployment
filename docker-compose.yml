@@ -29,7 +29,7 @@ services:
         condition: service_healthy
     command: server/core start
     environment:
-      - PUBLIC_URL=${BASE_URL:-http://localhost:3000}/auth/
+      - PUBLIC_URL=${BASE_URL}/auth/
       - ROBOT_ADMIN_ENABLED=true
       - ROBOT_ADMIN_SECRET=${AUTHUP_SECRET:-start123}
       - ROBOT_ADMIN_SECRET_RESET=true
@@ -47,8 +47,8 @@ services:
     container_name: portal
     restart: unless-stopped
     environment:
-      - NUXT_PUBLIC_API_URL=${BASE_URL:-http://localhost:3000}/api/
-      - NUXT_PUBLIC_AUTHUP_URL=${BASE_URL:-http://localhost:3000}/auth/
+      - NUXT_PUBLIC_API_URL=${BASE_URL}/api/
+      - NUXT_PUBLIC_AUTHUP_URL=${BASE_URL}/auth/
     networks:
       dnpm:
 
@@ -61,7 +61,7 @@ services:
       - LOCAL_SITE=${BACKEND_LOCAL_SITE}   # Format: {Site-ID}:{Site-name}, e.g. UKT:Tübingen
       - RD_RANDOM_DATA=${BACKEND_RD_RANDOM_DATA:--1}
       - MTB_RANDOM_DATA=${BACKEND_MTB_RANDOM_DATA:--1}
-      - HATEOAS_HOST=${BASE_URL:-http://localhost:3000}
+      - HATEOAS_HOST=${BASE_URL}
       - CONNECTOR_TYPE=${BACKEND_CONNECTOR_TYPE:-broker}
       - AUTHUP_URL=${BACKEND_AUTHUP_URL:-robot://system:${AUTHUP_SECRET:-start123}@http://authup:3000}
     volumes:
@@ -83,7 +83,6 @@ services:
       - '/PATH/TO/dnpm-client-cert.pem:/etl/ssl/certs/dnpm-client-cert.pem' # Client certificate
       - '/PATH/TO/dnpm-client-key.pem:/etl/ssl/certs/dnpm-client-key.pem'   # Client private key
       - '/PATH/TO/ca-cert-chain.pem:/etl/ssl/certs/ca-cert-chain.pem'       # Chain of Trusted CAs for remote host verification
-        ....
     networks:
       dnpm:
 
