@@ -69,8 +69,8 @@ services:
       - CONNECTOR_TYPE=${BACKEND_CONNECTOR_TYPE:-broker}
       - AUTHUP_URL=${BACKEND_AUTHUP_URL:-robot://system:${AUTHUP_SECRET:-start123}@http://authup:3000}
     volumes:
-      - ./backend-config:/dnpm_config
-      - ./backend-data:/dnpm_data
+      - /PATH/TO/CONFIG/DIR:/dnpm_config
+      - /PATH/TO/DATA/DIR:/dnpm_data
     networks:
       dnpm:
 
@@ -81,12 +81,12 @@ services:
     volumes:
       - './nginx_tls.conf:/etc/nginx/nginx.conf'
       - '/var/run/docker.sock:/tmp/docker.sock:ro'
-      - './dnpm-ca-cert.pem:/etl/ssl/certs/dnpm-ca-cert.pem'                # DNPM CA as trusted CA for Client certs in mutual TLS
-      - '/PATH/TO/ca-cert-chain.pem:/etl/ssl/certs/ca-cert-chain.pem'       # Chain of Trusted CAs for remote host verification
-      - '/PATH/TO/dnpm-server-cert.pem:/etl/ssl/certs/dnpm-server-cert.pem' # Server certificate
-      - '/PATH/TO/dnpm-server-key.pem:/etl/ssl/certs/dnpm-server-key.pem'   # Server private key
-      - '/PATH/TO/dnpm-client-cert.pem:/etl/ssl/certs/dnpm-client-cert.pem' # Client certificate
-      - '/PATH/TO/dnpm-client-key.pem:/etl/ssl/certs/dnpm-client-key.pem'   # Client private key
+      - '/PATH/TO/dnpm-ca-cert.pem:/etc/ssl/certs/dnpm-ca-cert.pem'         # DNPM CA as trusted CA for Client certs in mutual TLS
+      - '/PATH/TO/ca-cert-chain.pem:/etc/ssl/certs/ca-cert-chain.pem'       # Chain of Trusted CAs for remote host verification
+      - '/PATH/TO/dnpm-server-cert.pem:/etc/ssl/certs/dnpm-server-cert.pem' # Server certificate
+      - '/PATH/TO/dnpm-server-key.pem:/etc/ssl/certs/dnpm-server-key.pem'   # Server private key
+      - '/PATH/TO/dnpm-client-cert.pem:/etc/ssl/certs/dnpm-client-cert.pem' # Client certificate
+      - '/PATH/TO/dnpm-client-key.pem:/etc/ssl/certs/dnpm-client-key.pem'   # Client private key
     networks:
       dnpm:
 

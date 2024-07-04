@@ -2,7 +2,7 @@
 
 <configuration scan="true">
 
-  <property name="LOG_DIR"  value="/dnpm_data/logs/"/>
+  <property name="LOG_DIR"  value="/dnpm_data/logs"/>
   <property name="LOG_FILE" value="dnpm-dip-backend"/>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
