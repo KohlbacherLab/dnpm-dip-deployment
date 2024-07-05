@@ -34,7 +34,8 @@ The only _mandatory_ variables are
 | `BASE_URL`           | The base URL to your local DNPM:DIP node. In a production set-up, the hostname of (reverse) proxy behind which the components run (see below). In a (local) development/test set-up possibly `http://localhost` |
 | `BACKEND_LOCAL_SITE` | Your Site, in format `{Site-ID}:{Site-name}`, e.g. `UKT:Tübingen` (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2613900/DNPM+DIP+-+Broker-Verbindungen) for the overview list of Site IDs and names) |
 
-These variables should be provided via a file `.env` (see also [here](https://docs.docker.com/compose/environment-variables/set-environment-variables/)). Here's a sample:
+
+**TODO for You**: Provide these variables via a file `.env` (see also [here](https://docs.docker.com/compose/environment-variables/set-environment-variables/)). Here's a sample:
 
 ```bash
 BACKEND_LOCAL_SITE=UKx:SiteName
@@ -53,11 +54,31 @@ If desired, the following variables CAN be set in the `.env` file to override th
 | `BACKEND_MTB_RANDOM_DATA` | Set to a positive integer to activate in-memory generation of MTB random data (for test purposes) |
 
 
+### Reverse/Forward Proxy
+
+As shown in the system overview diagram above, the backend and frontend components are meant to be operated behind a reverse proxy.
+This handles TLS termination (including mutual TLS for API endpoints not secured by a login mechanism) and also acts as a forward proxy
+to handle the client certificate for mutual TLS on outgoing requests (see below about the Backend Connector).
+
+The default/recommended set-up uses NGINX, for which a template configuration file [`nginx_tls.conf`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/nginx_tls.conf) is available.
+
+**TODOs for You**: 
+
+* In`docker-compose.yml` service `nginx`, adapt the paths to the respective certificate and private key files.
+* In `nginx_tls.conf` Adapt the URL to the Broker in the `server` block acting as forward proxy to the Broker. 
+
+
 ### Backend
 
 The following components/functions of the backend are configured via external configuration files.
 Templates for these are available [here](https://github.com/KohlbacherLab/dnpm-dip-deployment/tree/master/backend-config).
-They must be placed in the directory bound to docker volume `/dnpm_config` in `docker-compose.yml`.
+These files are expected by the application in the directory bound to docker volume `/dnpm_config` in `docker-compose.yml`.
+
+**TODOs for You**:
+
+- In `docker-compose.yml`: Bind the directory to contain config files to `backend` service volume `/dnpm_config`
+- Place files [`production.conf`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/production.conf),[`logback.xml`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/logback.xml),[`config.xml`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/config.xml) into this config directory
+
 
 
 #### Play HTTP Server
@@ -80,7 +101,10 @@ http.parser.maxMemoryBuffer=2MB
 
 #### Persistence
 
-Data persistence by the backend uses the file system. Bind the directory meant for this purpose to the backend service's docker volume `/dnpm_data`. 
+Data persistence by the backend uses the file system. 
+
+**TODO for You**: In `docker-compose.yml`, bind the directory meant for this purpose to the `backend` service's docker volume `/dnpm_data`. 
+
 Depending on the permission set on this directory, you might have to explicitly set the system user ID for the docker process running the backend (see `services.backend.user` in `docker-compose.yml`).
 
 
@@ -89,6 +113,7 @@ Depending on the permission set on this directory, you might have to explicitly 
 Logging is based on [SLF4J](https://slf4j.org/).
 The SLF4J implementation plugged in by the Play Framework is [Logback](https://logback.qos.ch/), which is configured via file [`logback.xml`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/logback.xml).
 The default settings in the template define a daily rotating log file stored in sub-folder `/logs` of the docker volume bound for persistence (see above).
+
 You might consider removing/deactivating the logging [appender to STDOUT](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/logback.xml#L30)
 
 
@@ -96,29 +121,22 @@ You might consider removing/deactivating the logging [appender to STDOUT](https:
 
 The Backend application itself is configured via [`config.xml`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/config.xml).
 The main configuration item there is the type of Connector used for communication with external DNPM:DIP node peers.
-This file's template shows example configurations for both possible connector types described below. Simply delete the one _not_ applicable to your case.
+
+This file's template shows example configurations for both possible connector types described below.
+
+**TODO for You**: Delete the one _not_ applicable to your case, and follow respective instructions below.
 
 ##### Broker Connector
 
-The connector for the hub/spoke network topology used in DNPM, via a central broker.
-The primary parameter to adapt is the base URL to your local Broker Proxy in `<Broker baseURL="..."/>`.
+The connector for the hub/spoke network topology used in DNPM, based on a central broker accessed via a local Broker Proxy (see below).
 The connector performs "peer discovery" by fetching the list of external peers from the central broker.
-If desired, you can also override the request time-out (seconds).
+If desired, you can override the request time-out (seconds).
 Also, in case you prefer the nector to periodically update its "peer list", instead of just once upon start-up, set the period (minutes).
+
 
 ##### Peer-to-peer Connector
 
 The connector based on a peer-to-peer network topology, i.e. with direct connections among DNPM:DIP nodes. Accordingly, each external peer's Site ID, Name, and BaseURL must be configured in a dedicated element, as shown in the template.
-
-
-### Reverse Proxy
-
-As shown in the system overview diagram above, the backend and frontend components are meant to be operated behind a reverse proxy.
-This handles TLS termination (including mutual TLS for API endpoints not secured by a login mechanism) and also acts as a forward proxy to handle the client certificate for mutual TLS on outgoing requests.
-
-The default/recommended set-up uses NGINX, for which a template configuration file [`nginx_tls.conf`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/nginx_tls.conf) is available.
-
-You must adapt your `docker-compose.yml` with corresponding paths to the respective certificate and private key files.
 
 
 

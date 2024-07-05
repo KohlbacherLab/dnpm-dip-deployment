@@ -18,7 +18,7 @@
   <Connector>
 
     <!-- Base URL to DNPM-Broker-Proxy -->
-    <Broker baseURL="http://localhost"/>
+    <Broker baseURL="http://nginx:9010"/>
      
     <!-- OPTIONAL request timeout (in seconds), Default 10 s -->
     <Timeout seconds="30"/>
