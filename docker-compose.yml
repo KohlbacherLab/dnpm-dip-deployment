@@ -90,6 +90,10 @@ services:
       - '/PATH/TO/dnpm-server-key.pem:/etc/ssl/certs/dnpm-server-key.pem'   # Server private key
       - '/PATH/TO/dnpm-client-cert.pem:/etc/ssl/certs/dnpm-client-cert.pem' # Client certificate
       - '/PATH/TO/dnpm-client-key.pem:/etc/ssl/certs/dnpm-client-key.pem'   # Client private key
+    depends_on:
+      - authup
+      - portal
+      - backend
     networks:
       dnpm:
 
