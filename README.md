@@ -1,9 +1,6 @@
 # DNPM:DIP - Deployment/Operation Instructions
 
-
-**WORK IN PROGRESS**
-
-
+> 🚧 **Work in Progress**
 
 ## Pre-requisites
 
@@ -29,13 +26,13 @@ A template [`docker-compose.yml`](https://github.com/KohlbacherLab/dnpm-dip-depl
 Basic configuration occurs via environment variables, for most of which default values are pre-defined.
 The only _mandatory_ variables are 
 
-| Variable | Use/Meaning |
-| -------- | ----------- |
-| `BASE_URL`           | The base URL to your local DNPM:DIP node. In a production set-up, the hostname of (reverse) proxy behind which the components run (see below). In a (local) development/test set-up possibly `http://localhost` |
-| `BACKEND_LOCAL_SITE` | Your Site, in format `{Site-ID}:{Site-name}`, e.g. `UKT:Tübingen` (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2613900/DNPM+DIP+-+Broker-Verbindungen) for the overview list of Site IDs and names) |
+| Variable               | Use/Meaning                                                                                                                                                                                                            |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `BASE_URL`             | The base URL to your local DNPM:DIP node. In a production set-up, the hostname of (reverse) proxy behind which the components run (see below). In a (local) development/test set-up possibly `http://localhost`        |
+| `BACKEND_LOCAL_SITE`   | Your Site, in format `{Site-ID}:{Site-name}`, e.g. `UKT:Tübingen` (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2613900/DNPM+DIP+-+Broker-Verbindungen) for the overview list of Site IDs and names) |
 
 
-**TODO for You**: Provide these variables via a file `.env` (see also [here](https://docs.docker.com/compose/environment-variables/set-environment-variables/)). Here's a sample:
+**TODO for You**: Provide these variables via a file `.env` in the same folder (see also [here](https://docs.docker.com/compose/environment-variables/set-environment-variables/)). Here's a sample:
 
 ```bash
 BACKEND_LOCAL_SITE=UKx:SiteName
@@ -44,13 +41,13 @@ BASE_URL=https://dnpm.uni-x.de
 
 If desired, the following variables CAN be set in the `.env` file to override the default values set in the `docker-compose.yml`:
 
-| Variable | Use/Meaning |
-| -------- | ----------- |
-| `AUTHUP_SECRET`           | Secret (password) of the Authup Admin user |
-| `MYSQL_ROOT_PASSWORD`     | Password of the MySQL DB used in Authup |
-| `BACKEND_CONNECTOR_TYPE`  | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below) | 
-| `BACKEND_AUTHUP_URL`      | Base URL under which the Backend can reach Authup |  
-| `BACKEND_RD_RANDOM_DATA`  | Set to a positive integer to activate in-memory generation of RD random data (for test purposes) |
+| Variable                  | Use/Meaning                                                                                       |
+|---------------------------|---------------------------------------------------------------------------------------------------|
+| `AUTHUP_SECRET`           | Secret (password) of the Authup Admin user                                                        |
+| `MYSQL_ROOT_PASSWORD`     | Password of the MySQL DB used in Authup                                                           |
+| `BACKEND_CONNECTOR_TYPE`  | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below)         | 
+| `BACKEND_AUTHUP_URL`      | Base URL under which the Backend can reach Authup                                                 |  
+| `BACKEND_RD_RANDOM_DATA`  | Set to a positive integer to activate in-memory generation of RD random data (for test purposes)  |
 | `BACKEND_MTB_RANDOM_DATA` | Set to a positive integer to activate in-memory generation of MTB random data (for test purposes) |
 
 
