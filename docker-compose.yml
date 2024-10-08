@@ -69,8 +69,8 @@ services:
       - CONNECTOR_TYPE=${BACKEND_CONNECTOR_TYPE:-broker}
       - AUTHUP_URL=${BACKEND_AUTHUP_URL:-robot://system:${AUTHUP_SECRET:-start123}@http://authup:3000}
     volumes:
-      - /PATH/TO/CONFIG/DIR:/dnpm_config
-      - /PATH/TO/DATA/DIR:/dnpm_data
+      - './backend-config:/dnpm_config'
+      - './backend-data:/dnpm_data'
     depends_on:
       authup:
         condition: service_healthy
