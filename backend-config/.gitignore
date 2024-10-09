@@ -1,0 +1,6 @@
+*
+*/
+!.gitignore
+!config.template.xml
+!logback.template.xml
+!production.template.conf
