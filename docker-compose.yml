@@ -59,6 +59,8 @@ services:
   backend:
     container_name: backend
     image: ghcr.io/kohlbacherlab/dnpm-dip-backend:latest
+    pull_policy: always
+    restart: unless-stopped
     # Optionally set system UserID with corresponding access permissions to data persistence directory
     #user: "UserID"
     environment:

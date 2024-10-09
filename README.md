@@ -32,7 +32,7 @@ The only _mandatory_ variables are
 | `BACKEND_LOCAL_SITE`   | Your Site, in format `{Site-ID}:{Site-name}`, e.g. `UKT:Tübingen` (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2613900/DNPM+DIP+-+Broker-Verbindungen) for the overview list of Site IDs and names) |
 
 
-**TODO for You**: Provide these variables via a file `.env` in the same folder (see also [here](https://docs.docker.com/compose/environment-variables/set-environment-variables/)). Here's a sample:
+**TODO for You**: Provide these variables via a file `.env` (see also [here](https://docs.docker.com/compose/environment-variables/set-environment-variables/) (Confluence Login required)). Here's a sample:
 
 ```bash
 BACKEND_LOCAL_SITE=UKx:SiteName
@@ -41,14 +41,14 @@ BASE_URL=https://dnpm.uni-x.de
 
 If desired, the following variables CAN be set in the `.env` file to override the default values set in the `docker-compose.yml`:
 
-| Variable                  | Use/Meaning                                                                                       |
-|---------------------------|---------------------------------------------------------------------------------------------------|
-| `AUTHUP_SECRET`           | Secret (password) of the Authup Admin user                                                        |
-| `MYSQL_ROOT_PASSWORD`     | Password of the MySQL DB used in Authup                                                           |
-| `BACKEND_CONNECTOR_TYPE`  | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below)         | 
-| `BACKEND_AUTHUP_URL`      | Base URL under which the Backend can reach Authup                                                 |  
-| `BACKEND_RD_RANDOM_DATA`  | Set to a positive integer to activate in-memory generation of RD random data (for test purposes)  |
-| `BACKEND_MTB_RANDOM_DATA` | Set to a positive integer to activate in-memory generation of MTB random data (for test purposes) |
+| Variable | Use/Meaning |
+| -------- | ----------- |
+| `AUTHUP_SECRET`           | Secret (password) of the Authup Admin user |
+| `MYSQL_ROOT_PASSWORD`     | Password of the MySQL DB used in Authup |
+| `BACKEND_CONNECTOR_TYPE`  | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below) | 
+| `BACKEND_AUTHUP_URL`      | Base URL under which the Backend can reach Authup |  
+| `BACKEND_RD_RANDOM_DATA`  | Set to a positive integer to activate in-memory generation of Rade Diseases (RD) random data (for test purposes) |
+| `BACKEND_MTB_RANDOM_DATA` | Set to a positive integer to activate in-memory generation of Mol. Tumor Board (MTB) random data (for test purposes) |
 
 
 ### Reverse/Forward Proxy
@@ -81,7 +81,9 @@ These files are expected by the application in the directory bound to docker vol
 #### Play HTTP Server
 
 The Play HTTP Server in which the backend application runs is configured via file [`production.conf`](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/production.conf).
-The template provides defaults for all required settings. In case the backend won't be addressed via a reverse proxy forwarding to 'localhost' (see below) but directly by IP and/or hostname, these "allowed hosts" must be configured explicitly:
+The template provides defaults for all required settings.
+
+In case the backend won't be addressed via a reverse proxy forwarding to 'localhost' (see below) but directly by IP and/or hostname, these "allowed hosts" must be configured explicitly:
 
 ```bash
 ...
@@ -90,19 +92,22 @@ hosts {
 }
 ```
 See also the [Allowed Hosts Filter Documentation](https://www.playframework.com/documentation/3.0.x/AllowedHostsFilter).
-Depending on the size of upload request payload, the size of the memory buffer might also have to be adjusted here:
+
+
+Depending on the expected size of data uploads, the memory buffer can also be adjusted, e.g.:
 
 ```bash
+...
 http.parser.maxMemoryBuffer=2MB
 ```
 
 #### Persistence
 
-Data persistence by the backend uses the file system. 
+Data persistence by the backend uses the file system. A dedicated directory must therefore be configured. 
 
 **TODO for You**: In `docker-compose.yml`, bind the directory meant for this purpose to the `backend` service's docker volume `/dnpm_data`. 
 
-Depending on the permission set on this directory, you might have to explicitly set the system user ID for the docker process running the backend (see `services.backend.user` in `docker-compose.yml`).
+**NOTE**: Depending on the permission set on this directory, you might have to explicitly set the system user ID for the docker process running the backend (see `services.backend.user` in `docker-compose.yml`).
 
 
 #### Logging
@@ -125,15 +130,16 @@ This file's template shows example configurations for both possible connector ty
 
 ##### Broker Connector
 
-The connector for the hub/spoke network topology used in DNPM, based on a central broker accessed via a local Broker Proxy (see below).
+The connector for the hub/spoke network topology used in DNPM, based on a central broker accessed via a local Broker Proxy (see system overview diagram).
 The connector performs "peer discovery" by fetching the list of external peers from the central broker.
 If desired, you can override the request time-out (seconds).
-Also, in case you prefer the nector to periodically update its "peer list", instead of just once upon start-up, set the period (minutes).
+Also, in case you prefer the connector to periodically update its "peer list", instead of just once upon start-up, set the period (minutes).
 
 
 ##### Peer-to-peer Connector
 
-The connector based on a peer-to-peer network topology, i.e. with direct connections among DNPM:DIP nodes. Accordingly, each external peer's Site ID, Name, and BaseURL must be configured in a dedicated element, as shown in the template.
+The connector based on a peer-to-peer network topology, i.e. with direct connections among DNPM:DIP nodes.
+Accordingly, each external peer's Site ID, Name, and BaseURL must be configured in a dedicated element, as shown in the template.
 
 
 
