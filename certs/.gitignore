@@ -1,0 +1,9 @@
+*
+*/
+!.gitignore
+!client-cert.template.pem
+!client-key.template.pem
+!dfn-ca-cert.pem
+!dnpm-ca-cert.pem
+!server-cert.template.pem
+!server-key.template.pem
