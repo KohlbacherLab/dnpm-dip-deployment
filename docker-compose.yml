@@ -34,6 +34,7 @@ services:
     command: server/core start
     environment:
       - PUBLIC_URL=${BASE_URL}/auth/
+      - AUTHORIZE_REDIRECT_URL=${BASE_URL}
       - ROBOT_ADMIN_ENABLED=true
       - ROBOT_ADMIN_SECRET=${AUTHUP_SECRET:-start123}
       - ROBOT_ADMIN_SECRET_RESET=true
