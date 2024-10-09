@@ -41,13 +41,13 @@ BASE_URL=https://dnpm.uni-x.de
 
 If desired, the following variables CAN be set in the `.env` file to override the default values set in the `docker-compose.yml`:
 
-| Variable | Use/Meaning |
-| -------- | ----------- |
-| `AUTHUP_SECRET`           | Secret (password) of the Authup Admin user |
-| `MYSQL_ROOT_PASSWORD`     | Password of the MySQL DB used in Authup |
-| `BACKEND_CONNECTOR_TYPE`  | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below) | 
-| `BACKEND_AUTHUP_URL`      | Base URL under which the Backend can reach Authup |  
-| `BACKEND_RD_RANDOM_DATA`  | Set to a positive integer to activate in-memory generation of Rade Diseases (RD) random data (for test purposes) |
+| Variable                  | Use/Meaning                                                                                                          |
+|---------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `AUTHUP_SECRET`           | Secret (password) of the Authup Admin user                                                                           |
+| `MYSQL_ROOT_PASSWORD`     | Password of the MySQL DB used in Authup                                                                              |
+| `BACKEND_CONNECTOR_TYPE`  | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below)                            | 
+| `BACKEND_AUTHUP_URL`      | Base URL under which the Backend can reach Authup                                                                    |  
+| `BACKEND_RD_RANDOM_DATA`  | Set to a positive integer to activate in-memory generation of Rade Diseases (RD) random data (for test purposes)     |
 | `BACKEND_MTB_RANDOM_DATA` | Set to a positive integer to activate in-memory generation of Mol. Tumor Board (MTB) random data (for test purposes) |
 
 
