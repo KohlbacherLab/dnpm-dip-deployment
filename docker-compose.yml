@@ -87,12 +87,12 @@ services:
     volumes:
       - './nginx.conf:/etc/nginx/nginx.conf'
       - '/var/run/docker.sock:/tmp/docker.sock:ro'
-      - './certs/dnpm-ca-cert.pem:/etc/ssl/certs/dnpm-ca-cert.pem'         # DNPM CA as trusted CA for Client certs in mutual TLS
+      - './certs/ca-cert.pem:/etc/ssl/certs/dnpm-ca-cert.pem'         # DNPM CA as trusted CA for Client certs in mutual TLS
       - './certs/ca-cert-chain.pem:/etc/ssl/certs/ca-cert-chain.pem'       # Chain of Trusted CAs for remote host verification
-      - './certs/dnpm-server-cert.pem:/etc/ssl/certs/dnpm-server-cert.pem' # Server certificate
-      - './certs/dnpm-server-key.pem:/etc/ssl/certs/dnpm-server-key.pem'   # Server private key
-      - './certs/dnpm-client-cert.pem:/etc/ssl/certs/dnpm-client-cert.pem' # Client certificate
-      - './certs/dnpm-client-key.pem:/etc/ssl/certs/dnpm-client-key.pem'   # Client private key
+      - './certs/server-cert.pem:/etc/ssl/certs/dnpm-server-cert.pem' # Server certificate
+      - './certs/server-key.pem:/etc/ssl/certs/dnpm-server-key.pem'   # Server private key
+      - './certs/client-cert.pem:/etc/ssl/certs/dnpm-client-cert.pem' # Client certificate
+      - './certs/client-key.pem:/etc/ssl/certs/dnpm-client-key.pem'   # Client private key
     depends_on:
       - authup
       - portal
