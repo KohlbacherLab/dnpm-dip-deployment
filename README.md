@@ -7,7 +7,7 @@
 
 - **HGNC Gene Set Download**: The application needs the HGNC Gene Set and thus tries to download it upon startup.
 However, the URL under which this was previouly available for download has recently changed, leading to exceptions in the backend log.
-This will be corrected shortlyi with the new download URL.
+This will be corrected shortly with the new download URL.
 Still, whenever the HGNC Gene Set is unavailable, the backend falls back to a packaged (but thus possibly outdated) version, so this cannot stop the backend from fully starting.
 
 
@@ -65,6 +65,7 @@ The provided `init.sh` script creates non-template copies of these for you to ad
 The following sections describe the meaning and necessary adaptations to the respective configuration files for customization of the setup.
 
 
+-------
 ### Docker Compose Environment
 
 Basic configuration occurs via environment variables in file `.env`.
@@ -175,11 +176,13 @@ The main configuration item there depends on the type Connector used for communi
 
 The connector for the hub/spoke network topology used in DNPM, based on a central broker accessed via a local Broker Proxy (see system overview diagram).
 The connector performs "peer discovery" by fetching the list of external peers from the central broker.
+
 If desired, you can override the request time-out (seconds), and in case you prefer the connector to periodically update its "peer list", instead of just once upon start-up, set the period (minutes).
 
 
 ##### Case: `peer2peer` Connector
 
 The connector based on a peer-to-peer network topology, i.e. with direct connections among DNPM:DIP nodes. (Provided only for potential backward compatibility with the "bwHealthCloud" infrastructure).
+
 In this case, each external peer's Site ID, Name, and BaseURL must be configured in a dedicated element, as shown in the [template](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/config.template.xml#L15).
 
