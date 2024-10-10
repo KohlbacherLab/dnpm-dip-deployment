@@ -10,7 +10,7 @@
     <UpdatePeriod minutes="30"/>
 
 
-    <!-- CASE 2: Peer-to-peer Connector: For each connector: Site ID, name (according to defined list) and baseUrl -->
+    <!-- CASE 2: Peer-to-peer Connector: For each peerr: Site ID and name (according to defined list), and baseUrl -->
     <!--
     <Peer id="UKBsp" name="Beispielhausen" baseUrl="..."/>
     <Peer id="UKBrl" name="Berlichingen"   baseUrl="..."/>
