@@ -67,7 +67,7 @@ services:
       - MTB_RANDOM_DATA=${BACKEND_MTB_RANDOM_DATA:--1}
       - HATEOAS_HOST=${BASE_URL}
       - CONNECTOR_TYPE=${BACKEND_CONNECTOR_TYPE:-broker}
-      - AUTHUP_URL=${BACKEND_AUTHUP_URL:-robot://system:${AUTHUP_SECRET:-start123}@http://authup:3000}
+      - AUTHUP_URL=robot://system:${AUTHUP_SECRET:-start123}@http://authup:3000
     volumes:
       - './backend-config:/dnpm_config'
       - './backend-data:/dnpm_data'

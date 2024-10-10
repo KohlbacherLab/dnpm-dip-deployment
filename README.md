@@ -39,9 +39,8 @@ This deployment comes with dummy SSL certificates to be runnable out-of-the-box,
 
 - Pull this repository
 - Run `./init.sh`
-- Ensure the backend application has correct permissions on directory `backend-data` in which it will store its data and log files: 
-    - Change permissions on that directory with `chmod -R 777 ./backend-data`
-    - Alternatively: In `docker-compose.yml`, assign a suitable system user ID to the `backend` service by adding entry `user: "{UserID}"`
+- Ensure the backend application has correct permissions on directory `backend-data` in which it will store its data and log files. 
+  Change permissions on that directory with `chmod -R 777 ./backend-data`
 - Run `docker compose up`
 
 This starts the components with the system's NGINX proxy running on `localhost:80` (and localhost:443 with the provided dummy SSL certificate).
@@ -69,25 +68,18 @@ The following sections describe the meaning and necessary adaptations to the res
 ### Docker Compose Environment
 
 Basic configuration occurs via environment variables in file `.env`.
-The only _mandatory_ variables are:
 
-| Variable               | Use/Meaning                                                                                                                                                                                                            |
-|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `BASE_URL`             | The base URL to your local DNPM:DIP node. In a production set-up, the hostname of the proxy behind which the components run (see below).  |
-| `BACKEND_LOCAL_SITE`   | Your Site, in format `{Site-ID}:{Site-name}`, e.g. `UKT:Tübingen` (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2613900/DNPM+DIP+-+Broker-Verbindungen) for the overview list of Site IDs and names in DNPM (Confluence Login required)) |
-
-The following variables CAN be set in the `.env` file to override the default values:
-
-| Variable                  | Use/Meaning                                                                                                          |
-|---------------------------|----------------------------------------------------------------------------------------------------------------------|
-| `HTTPS_PORT`              | HTTPS Port of the NGINX reverse proxy (see below)                                                                    |
-| `HTTP_PORT`               | HTTP Port of the NGINX reverse proxy (see below)                                                                     |
-| `AUTHUP_SECRET`           | Password of the Authup `admin` user                                                                                  |
-| `MYSQL_ROOT_PASSWORD`     | Password of the MySQL DB used in Authup                                                                              |
-| `BACKEND_CONNECTOR_TYPE`  | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below)                            | 
-| `BACKEND_AUTHUP_URL`      | Base URL under which the Backend can reach Authup                                                                    |  
-| `BACKEND_RD_RANDOM_DATA`  | Set to a positive integer to activate in-memory generation of Rade Diseases (RD) random data (for test purposes)     |
-| `BACKEND_MTB_RANDOM_DATA` | Set to a positive integer to activate in-memory generation of Mol. Tumor Board (MTB) random data (for test purposes) |
+| Variable                  |   Mandatory   | Use/Meaning                                                                                                                                                                                                                                                |
+|---------------------------|:-------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `BASE_URL`                |      ✔️       | The base URL to your local DNPM:DIP node. In a production set-up, the hostname of the proxy behind which the components run (see below).                                                                                                                   |
+| `BACKEND_LOCAL_SITE`      |      ✔️       | Your Site, in format `{Site-ID}:{Site-name}`, e.g. `UKT:Tübingen` (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2613900/DNPM+DIP+-+Broker-Verbindungen) for the overview list of Site IDs and names in DNPM (Confluence Login required)) |
+| `HTTPS_PORT`              |       ❌       | HTTPS Port of the NGINX reverse proxy (see below)                                                                                                                                                                                                          |
+| `HTTP_PORT`               |       ❌       | HTTP Port of the NGINX reverse proxy (see below)                                                                                                                                                                                                           |
+| `AUTHUP_SECRET`           |       ❌       | Password of the Authup `admin` user                                                                                                                                                                                                                        |
+| `MYSQL_ROOT_PASSWORD`     |       ❌       | Password of the MySQL DB used in Authup                                                                                                                                                                                                                    |
+| `BACKEND_CONNECTOR_TYPE`  |       ❌       | Set to one of { `broker`, `peer2peer` } to specify the desired connector type (see below)                                                                                                                                                                  | 
+| `BACKEND_RD_RANDOM_DATA`  |       ❌       | Set to a positive integer to activate in-memory generation of Rade Diseases (RD) random data (for test purposes)                                                                                                                                           |
+| `BACKEND_MTB_RANDOM_DATA` |       ❌       | Set to a positive integer to activate in-memory generation of Mol. Tumor Board (MTB) random data (for test purposes)                                                                                                                                       |
 
 -------
 ### Reverse/Forward Proxy
@@ -100,18 +92,18 @@ The default set-up uses NGINX.
 
 For production setup, you must override the following certificate files with your real ones:
 
-| File | Meaning | 
-|---------------|--------------|
-| `./certs/server-cert.pem` | Server certificate |
-| `./certs/server-key.pem`  | Server certificate's private key |
+| File                      | Meaning                                                      | 
+|---------------------------|--------------------------------------------------------------|
+| `./certs/server-cert.pem` | Server certificate                                           |
+| `./certs/server-key.pem`  | Server certificate's private key                             |
 | `./certs/client-cert.pem` | Client certificate for use in mutual TLS with external peers |
-| `./certs/client-key.pem`  | Client certificate's private key |
+| `./certs/client-key.pem`  | Client certificate's private key                             |
 
 The following certificates mustn't be changed:
 
-| File | Meaning | 
-|---------------|--------------|
-| `./certs/dfn-ca-cert.pem`  | Certificate chain of the central broker's server certificate (for remote host verification) |
+| File                       | Meaning                                                                                                         | 
+|----------------------------|-----------------------------------------------------------------------------------------------------------------|
+| `./certs/dfn-ca-cert.pem`  | Certificate chain of the central broker's server certificate (for remote host verification)                     |
 | `./certs/dnpm-ca-cert.pem` | Certificate of the DNPM CA from which the client certificates originate (for client verification in mutual TLS) |
 
 
@@ -152,10 +144,8 @@ http.parser.maxMemoryBuffer=10MB
 
 Persistence by the backend uses the file system, in directory `./backend-data` which is bound to the `backend` service's volume `/dnpm_data`. 
 
-Ensure the `backend` container has correct permissions on this directory, in which it will store its data and log files: 
-- Change permissions on that directory with `chmod -R 777 ./backend-data`
-- Alternatively: In `docker-compose.yml`, assign a suitable system user ID to the `backend` service by adding entry `user: "{UserID}"`
-
+Ensure the `backend` container has correct permissions on this directory, in which it will store its data and log files.
+Change permissions on that directory with `chmod -R 777 ./backend-data`.
 
 -------
 #### Logging
