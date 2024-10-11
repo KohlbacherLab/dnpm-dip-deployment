@@ -5,11 +5,7 @@
 
 ## Known Issues
 
-- **HGNC Gene Set Download**: The application needs the HGNC Gene Set and thus tries to download it upon startup.
-However, the URL under which this was previouly available for download has recently changed, leading to exceptions in the backend log.
-This will be corrected shortly with the new download URL.
-Still, whenever the HGNC Gene Set is unavailable, the backend falls back to a packaged (but thus possibly outdated) version, so this cannot stop the backend from fully starting.
-
+None a.t.m
 
 
 ## Pre-requisites
@@ -157,6 +153,7 @@ The default settings in the template define a daily rotating log file `dnpm-dip-
 You might consider removing/deactivating the logging [appender to STDOUT](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/logback.template.xml#L30)
 
 
+-------
 #### Application Config
 
 The Backend application itself is configured via `./backend-config/config.xml`.
