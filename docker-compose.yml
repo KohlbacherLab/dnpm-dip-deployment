@@ -51,7 +51,9 @@ services:
     container_name: portal
     restart: unless-stopped
     environment:
+      - NUXT_API_URL=http://backend:9000/
       - NUXT_PUBLIC_API_URL=${BASE_URL}/api/
+      - NUXT_AUTHUP_URL=http://authup:3000/
       - NUXT_PUBLIC_AUTHUP_URL=${BASE_URL}/auth/
     networks:
       dnpm:
