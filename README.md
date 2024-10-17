@@ -47,8 +47,11 @@ Default login credentials: `admin / start123`
 
 ## Detailed Set-up
 
-**NOTE**: Please avoid making local changes to the versioned files in this repo (e.g. `docker-compose.yml` or all `*.template.*`) to avoid conflicts upon subsequent pulls on the repository.
-All necessary configurations should rather occur via the non-versioned, non-template copies of respective files.
+> ⚠️ **WARNING**
+> 
+> Please avoid making local changes to the versioned files in this repo (e.g. `docker-compose.yml`, `nginx.conf` or all `*.template.*`) 
+> to avoid conflicts upon subsequent pulls on the repository. 
+> All necessary configurations should rather occur via the non-versioned, non-template copies of respective files.
 
 
 ### Template Files 
