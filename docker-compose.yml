@@ -86,6 +86,7 @@ services:
       - ${HTTP_PORT:-80}:80
     volumes:
       - './nginx.conf:/etc/nginx/nginx.conf'
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
       - './certs/dnpm-ca-cert.pem:/etc/ssl/certs/dnpm-ca-cert.pem'    # DNPM CA as trusted CA for Client certs in mutual TLS
       - './certs/dfn-ca-cert.pem:/etc/ssl/certs/ca-cert-chain.pem'    # Chain of Trusted CAs for remote host verification
       - './certs/server-cert.pem:/etc/ssl/certs/dnpm-server-cert.pem' # Server certificate
