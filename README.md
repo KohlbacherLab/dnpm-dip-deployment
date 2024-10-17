@@ -13,16 +13,16 @@ None a.t.m
 * Recommended VM properties:
     * OS: Linux
     * RAM: min. 8 GB
-    * CPU cores: min. 4 s
+    * CPU cores: min. 4
     * Disk: min. 20 GB
 * Docker / Docker Compose
 
 ### Certificates
 
-This deployment comes with dummy SSL certificates to be runnable out-of-the-box, but for production you'll need:
+This deployment comes with dummy SSL certificates to be runnable out-of-the-box for testing purposes, but for production you'll need:
 
 * DFN Server Certificate issued for your DNPM:DIP node's FQDN
-* Client Certificate issued by DNPM CA (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2590714/Zertifikat-Verwaltung#Zertifikat-Verwaltung-BeantragungeinesClient-Zertifikats) for instructions to request one (Confluence login required))
+* In case your site is to be connected to the "NGINX Broker" as part of the cross-site communication setup: Client Certificate issued by DNPM CA (see [here](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/2590714/Zertifikat-Verwaltung#Zertifikat-Verwaltung-BeantragungeinesClient-Zertifikats) for instructions to request one (Confluence login required))
 
 
 
@@ -47,6 +47,10 @@ Default login credentials: `admin / start123`
 
 ## Detailed Set-up
 
+**NOTE**: Please avoid making local changes to the versioned files in this repo (e.g. `docker-compose.yml` or all `*.template.*`) to avoid conflicts upon subsequent pulls on the repository.
+All necessary configurations should rather occur via the non-versioned, non-template copies of respective files.
+
+
 ### Template Files 
 
 Templates are provided for all configuration files.
@@ -56,6 +60,7 @@ Templates are provided for all configuration files.
 - `.env.template`
 
 The provided `init.sh` script creates non-template copies of these for you to adapt locally, e.g. `./backend-config/config.template.xml -> ./backend-config/config.xml`. 
+
 
 The following sections describe the meaning and necessary adaptations to the respective configuration files for customization of the setup.
 
