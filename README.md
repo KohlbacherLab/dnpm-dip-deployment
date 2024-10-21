@@ -216,9 +216,8 @@ For this, you would add a correponding check
   }
 
 ```
-similar to the pre-configured one for the "peer-to-peer API" described above.
+However, whereas the validity of client certificates for mutual TLS on the peer-to-peer API (see above) is checked against the DNPM CA, you would use an internal CA here.
 
-However, whereas the validity of client certificates for mutual TLS on the peer-to-peer API is checked against the DNPM CA, you would use an internal CA here.
 Alternatively, you can white-list only the certificate used by the ETL setup:
 
 ```nginx
