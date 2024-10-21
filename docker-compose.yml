@@ -7,7 +7,7 @@ volumes:
 services:
   mysql:
     image: mysql:latest
-    restart: always
+    restart: ${PULL_POLICY:-always}
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 3s
@@ -23,7 +23,7 @@ services:
 
   authup:
     image: authup/authup:latest
-    pull_policy: always
+    pull_policy: ${PULL_POLICY:-always}
     restart: unless-stopped
     volumes:
       - authup:/usr/src/app/writable
@@ -47,7 +47,7 @@ services:
 
   portal:
     image: ghcr.io/kohlbacherlab/dnpm-dip-portal:latest
-    pull_policy: always
+    pull_policy: ${PULL_POLICY:-always}
     container_name: portal
     restart: unless-stopped
     environment:
@@ -61,7 +61,7 @@ services:
   backend:
     container_name: backend
     image: ghcr.io/kohlbacherlab/dnpm-dip-backend:latest
-    pull_policy: always
+    pull_policy: ${PULL_POLICY:-always}
     restart: unless-stopped
     environment:
       - LOCAL_SITE=${BACKEND_LOCAL_SITE}   # Format: {Site-ID}:{Site-name}, e.g. UKT:Tübingen
@@ -85,14 +85,10 @@ services:
       - ${HTTPS_PORT:-443}:443
       - ${HTTP_PORT:-80}:80
     volumes:
-      - './nginx.conf:/etc/nginx/nginx.conf'
       - '/var/run/docker.sock:/tmp/docker.sock:ro'
-      - './certs/dnpm-ca-cert.pem:/etc/ssl/certs/dnpm-ca-cert.pem'    # DNPM CA as trusted CA for Client certs in mutual TLS
-      - './certs/dfn-ca-cert.pem:/etc/ssl/certs/ca-cert-chain.pem'    # Chain of Trusted CAs for remote host verification
-      - './certs/server-cert.pem:/etc/ssl/certs/dnpm-server-cert.pem' # Server certificate
-      - './certs/server-key.pem:/etc/ssl/certs/dnpm-server-key.pem'   # Server private key
-      - './certs/client-cert.pem:/etc/ssl/certs/dnpm-client-cert.pem' # Client certificate
-      - './certs/client-key.pem:/etc/ssl/certs/dnpm-client-key.pem'   # Client private key
+      - './certs:/etc/ssl/certs'
+      - './nginx/nginx.conf:/etc/nginx/nginx.conf'
+      - './nginx/sites-enabled:/etc/nginx/sites-enabled'
     depends_on:
       authup:
         condition: service_healthy

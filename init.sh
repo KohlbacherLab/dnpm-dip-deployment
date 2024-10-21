@@ -18,5 +18,17 @@ for templateFile in certs/*.template.*; do
 done	
 
 
+if [ ! -d nginx/sites-enabled ]; then mkdir nginx/sites-enabled; fi
+
+for templateFile in nginx/sites-available/*.template.*; do
+
+   name=${templateFile##*/}
+
+   file=nginx/sites-enabled/${name/.template}
+
+  if [ ! -f file ]; then cp ${templateFile} ${file}; fi
+done
+
+
 if [ ! -f .env ]; then cp .env.template .env; fi
 
