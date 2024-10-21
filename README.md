@@ -92,21 +92,18 @@ Basic configuration occurs via environment variables in file `.env`.
 
 As shown in the system overview diagram above, the backend and frontend components are operated behind a reverse proxy.
 In a production setting, this would handle TLS termination (including mutual TLS for API endpoints not secured by a login mechanism).
-Also, a forward proxy is required to handle the client certificate for mutual TLS on outgoing requests (see below about the Backend Connector).
+Also, unless your site uses the Samply infrastrucutre, a forward proxy is required to handle the client certificate for mutual TLS on requests to the "NGINX Broker" (see below about the Backend Connector).
 
 The default set-up uses NGINX.
 
-Template configuration files for the respective proxy servers are in `nginx/sites-available`.
+Template configuration files for the respective proxy servers are in `nginx/sites-available`. 
 The `init.sh` script creates non-template local copies of these in `nginx/sites-enabled`:
-
 
 | File                                        | Meaning                                                           | 
 |---------------------------------------------|-------------------------------------------------------------------|
 | `nginx/sites-enabled/reverse-proxy.conf`     | Reverse Proxy using plain HTTP                                    |
 | `nginx/sites-enabled/tls-reverse-proxy.conf` | Reverse Proxy using HTTPS (using provided dummy certificate)      |
 | `nginx/sites-enabled/forward-proxy.conf`     | Forward Proxy for outgoing requests to DNPM:DIP peers             |
-
-
 
 Aside from this, `certs` contains the provided default certificates:
 
@@ -125,10 +122,10 @@ From this default set-up, you can make local customizations by adapting the resp
 >
 > Although the usual procedure is to keep configs in `sites-available` and activate them using symbolic links in `sites-enabled`, we couldn't yet get this to work with the bound local directory.
 > Hence the copying of actual config files in `sites-enabled`.
-> This might be eventually corrected
+> This might be eventually corrected.
 
 
-#### Using real server and client certificates
+#### Real Server and Client certificates
 
 In production, you must provide you real server certificate and key, and in case your site uses the "NGINX Broker for cross-site communication, also the client certificate and key for mutual TLS.
 Provide these by either _overwriting_ the respective files in `.certs`, or simply adding these to `certs` and _adapting_ the files names in `tls-reverse-proxy.conf` and `forward-proxy.conf`.
@@ -140,6 +137,7 @@ Provide these by either _overwriting_ the respective files in `.certs`, or simpl
 >| `./certs/dfn-ca-cert.pem`      | Certificate chain of the central broker's server certificate (for remote host verification)                     |
 >| `./certs/dnpm-ca-cert.pem`     | Certificate of the DNPM CA from which the client certificates originate (for client verification in mutual TLS) |
 
+
 #### HTTPS only
 
 In a production setup, you will probably want to have the reverse proxy using only HTTPS, so remove the plain HTTP proxy configuration `.../sites-enabled/reverse-proxy.conf`.
@@ -149,28 +147,27 @@ In a production setup, you will probably want to have the reverse proxy using on
 
 Some of the backend's API endpoints meant to be accessed by "system agents" instead of users via their browser are not protected by a login-based mechanism, and MUST be secured by other means.
 
-| API | URI pattern |
-|--------|---------------|
-| Peer-to-Peer API | `/api/{usecase}/peer2peer/...` |
-| [ETL API](https://github.com/KohlbacherLab/dnpm-dip-api-gateway/tree/8839e7dc3672144493c4fe22d94bc09154077126/app/controllers#example-data-and-etl-api) | `/api/{usecase}/etl/...`       |
+| API | URI pattern | Purpose |
+|--------|---------------|----------|
+| Peer-to-Peer API | `/api/{usecase}/peer2peer/...` | Calls among DNPM:DIP nodes (status check, federated queries) | 
+| [ETL API](https://github.com/KohlbacherLab/dnpm-dip-api-gateway/tree/8839e7dc3672144493c4fe22d94bc09154077126/app/controllers#example-data-and-etl-api) | `/api/{usecase}/etl/...` | Integration with local ETL setup (data upload, deletion) |
 
 The following sections describe available options for the respective sub-API.
 
 
 ##### Peer-to-Peer API
 
-This is API via which DNPM:DIP communicate among eath other for federated queries or status checks.
+The setup varies depending on whether your site is connected to the "NGINX Broker" with inbound HTTPS or outbound-only HTTPS with the MIRACUM Polling Module, and whether you are connected to the Samply Broker.
 
-With regards to this API, the setup varies depending on whether your site is connected to the "NGINX Broker" with inbound HTTPS or outbound-only HTTPS with the MIRACUM Polling Module, and whether you are connected to the Samply Broker.
-
-###### NGINX Broker with inbound HTTPS
+###### Case: NGINX Broker with inbound HTTPS
 
 The default security mechanism here is mutual TLS, as is already pre-configured in the confugration templates.
 
 In a production setting, however, you might use different reverse proxy servers (with differents FQDNs) to expose the backend to internal clients (browser, ETL setup) separately from this "peer to peer API" destined for external calls (DNPM broker).
-In this case, you could split the reverse proxy configuration accordingly, perform the following adaptations:
-- Remove the optional mutual TLS check from the _internal_ reverse proxy
-- Make mutual TLS check mandatory in the external reverse proxy and only allow requests to the peer-to-peer API:
+In this case, you could split the reverse proxy configuration accordingly, and perform the following adaptations:
+
+- Remove the optional mutual TLS verification from the _internal_ reverse proxy
+- Make mutual TLS verification _mandatory_ in the external reverse proxy and only allow requests to the peer-to-peer API:
 ```nginx
 
   ...
@@ -183,15 +180,16 @@ In this case, you could split the reverse proxy configuration accordingly, perfo
 
 ```
 
-###### NGINX Broker with Polling Module
+###### Case: NGINX Broker with Polling Module (oubound-only HTTPS)
 
 In this case, given that the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via the Polling Module (most likely running on the sme VM), the mutual TLS check might be discarded altogether. 
 
-###### Samply Beam Connect
+###### Case: Samply Beam Connect
 
 This case is similar to the above one: the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via Samply Beam Connect, the mutual TLS check might be discarded altogether. 
 
 In addition, the _forward_ proxy for mutual TLS with the upstream "Broker server" is also not required, so you would also remove `.../sites-enabled/forward-proxy.conf` and adapt the base URL in the backend's connector configuration (see below) to point to Samply Beam Connect.
+
 
 ##### ETL API
 
@@ -204,6 +202,10 @@ For this, you would add a correponding check
 ```nginx
 
   ...
+  ssl_client_certificate   /etc/ssl/certs/my-ca-cert.pem;  # Path to trusted CA delivering the client cert used by the ETL stup
+  ssl_verify_client        on;
+  ssl_verify_depth         1;
+
 
   # Enforce mutual TLS for calls to ETL API endpoints
   location ~ /api(/.*)?/etl {
@@ -215,8 +217,16 @@ For this, you would add a correponding check
 
 ```
 similar to the pre-configured one for the "peer-to-peer API" described above.
-However, whereas the validity of client certificates for mutual TLS on the peer-to-peer API is checked against the DNPM CA,
-you would use an internal CA in this case here.
+
+However, whereas the validity of client certificates for mutual TLS on the peer-to-peer API is checked against the DNPM CA, you would use an internal CA here.
+Alternatively, you can white-list only the certificate used by the ETL setup:
+
+```nginx
+  ...
+  ssl_client_certificate   /etc/ssl/certs/client-cert.pem;  # Client certificate(s) white-list 
+  ssl_verify_client        on;
+  ssl_verify_depth         0;
+```
 
 
 ###### HTTP Basic Authentication
