@@ -92,7 +92,7 @@ Basic configuration occurs via environment variables in file `.env`.
 
 As shown in the system overview diagram above, the backend and frontend components are operated behind a reverse proxy.
 In a production setting, this would handle TLS termination (including mutual TLS for API endpoints not secured by a login mechanism).
-Also, unless your site uses the Samply infrastrucutre, a forward proxy is required to handle the client certificate for mutual TLS on requests to the "NGINX Broker" (see below about the Backend Connector).
+Also, unless your site uses the Samply infrastructure, a forward proxy is required to handle the client certificate for mutual TLS on requests to the "NGINX Broker" (see below about the Backend Connector).
 
 The default set-up uses NGINX.
 
@@ -125,10 +125,15 @@ From this default set-up, you can make local customizations by adapting the resp
 > This might be eventually corrected.
 
 
+#### HTTPS only
+
+In a production setup, you will probably want to have the reverse proxy using only HTTPS, so remove the plain HTTP proxy configuration `.../sites-enabled/reverse-proxy.conf`.
+
+
 #### Real Server and Client certificates
 
-In production, you must provide you real server certificate and key, and in case your site uses the "NGINX Broker for cross-site communication, also the client certificate and key for mutual TLS.
-Provide these by either _overwriting_ the respective files in `.certs`, or simply adding these to `certs` and _adapting_ the files names in `tls-reverse-proxy.conf` and `forward-proxy.conf`.
+In production, you must provide you real server certificate and key, and in case your site uses the "NGINX Broker" for cross-site communication, also the client certificate and key for mutual TLS.
+Provide these by either _overwriting_ the respective files in `.certs`, or simply adding these to `certs` and _adapting_ the file paths in `tls-reverse-proxy.conf` and `forward-proxy.conf`.
 
 > **NOTE**: Please do not overwrite the following certificate files:
 >
@@ -136,11 +141,6 @@ Provide these by either _overwriting_ the respective files in `.certs`, or simpl
 >|---------------------------|-------------------------------------------------------------------|
 >| `./certs/dfn-ca-cert.pem`      | Certificate chain of the central broker's server certificate (for remote host verification)                     |
 >| `./certs/dnpm-ca-cert.pem`     | Certificate of the DNPM CA from which the client certificates originate (for client verification in mutual TLS) |
-
-
-#### HTTPS only
-
-In a production setup, you will probably want to have the reverse proxy using only HTTPS, so remove the plain HTTP proxy configuration `.../sites-enabled/reverse-proxy.conf`.
 
 
 #### Securing Backend APIs
@@ -159,14 +159,14 @@ The following sections describe available options for the respective sub-API.
 
 The setup varies depending on whether your site is connected to the "NGINX Broker" with inbound HTTPS or outbound-only HTTPS with the MIRACUM Polling Module, and whether you are connected to the Samply Broker.
 
-###### Case: NGINX Broker with inbound HTTPS
+**Case: NGINX Broker with inbound HTTPS**
 
-The default security mechanism here is mutual TLS, as is already pre-configured in the confugration templates.
+The default security mechanism here is mutual TLS, as is already pre-configured.
 
-In a production setting, however, you might use different reverse proxy servers (with differents FQDNs) to expose the backend to internal clients (browser, ETL setup) separately from this "peer to peer API" destined for external calls (DNPM broker).
+In a production setting, however, you might use _different_ reverse proxy servers (with differents FQDNs) to expose the backend to internal clients (browser, ETL setup) separately from this "peer to peer API" destined for external calls (DNPM broker).
 In this case, you could split the reverse proxy configuration accordingly, and perform the following adaptations:
 
-- Remove the optional mutual TLS verification from the _internal_ reverse proxy
+- Remove the optional mutual TLS verification and `location ~ /api(/.*)?/peer2peer { ... }` from the _internal_ reverse proxy
 - Make mutual TLS verification _mandatory_ in the external reverse proxy and only allow requests to the peer-to-peer API:
 ```nginx
 
@@ -178,13 +178,14 @@ In this case, you could split the reverse proxy configuration accordingly, and p
     proxy_pass http://backend:9000;
   }
 
+  # No other location entries!
 ```
 
-###### Case: NGINX Broker with Polling Module (oubound-only HTTPS)
+**Case: NGINX Broker with Polling Module (oubound-only HTTPS)**
 
 In this case, given that the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via the Polling Module (most likely running on the sme VM), the mutual TLS check might be discarded altogether. 
 
-###### Case: Samply Beam Connect
+**Case: Samply Beam Connect**
 
 This case is similar to the above one: the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via Samply Beam Connect, the mutual TLS check might be discarded altogether. 
 
@@ -195,7 +196,7 @@ In addition, the _forward_ proxy for mutual TLS with the upstream "Broker server
 
 Here are multiple possibilities to secure this sub-API.
 
-###### Mutual TLS
+**Mutual TLS**
 
 As shown in the above system overview diagram, access to the ETL API could be secured by [mutual TLS](https://docs.nginx.com/nginx/admin-guide/security-controls/securing-http-traffic-upstream/).
 For this, you would add a correponding check
@@ -228,7 +229,7 @@ Alternatively, you can white-list only the certificate used by the ETL setup:
 ```
 
 
-###### HTTP Basic Authentication
+**HTTP Basic Authentication**
 
 Alternatively, access to the ETL API can be secured using HTTP Basic Authentication, as described in [the NGINX docs](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/). 
 
