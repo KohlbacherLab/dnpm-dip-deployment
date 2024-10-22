@@ -7,7 +7,8 @@ volumes:
 services:
   mysql:
     image: mysql:latest
-    restart: ${PULL_POLICY:-always}
+    pull_policy: ${PULL_POLICY:-always}
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 3s
