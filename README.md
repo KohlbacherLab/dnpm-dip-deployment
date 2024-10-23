@@ -156,6 +156,7 @@ The following sections describe available options for the respective sub-API.
 
 
 ##### Peer-to-Peer API
+---------
 
 The setup varies depending on whether your site is connected to the "NGINX Broker" with inbound HTTPS or outbound-only HTTPS with the MIRACUM Polling Module, and whether you are connected to the Samply Broker.
 
@@ -181,9 +182,10 @@ In this case, you could split the reverse proxy configuration accordingly, and p
   # No other location entries!
 ```
 
-**Case: NGINX Broker with Polling Module (oubound-only HTTPS)**
+**Case: NGINX Broker with Polling Module (outbound-only HTTPS)**
 
-In this case, given that the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via the Polling Module (most likely running on the sme VM), the mutual TLS check might be discarded altogether. 
+In this case, given that the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via the Polling Module
+ (most likely running on the same VM), the mutual TLS check might be discarded altogether. 
 
 **Case: Samply Beam Connect**
 
@@ -193,13 +195,14 @@ In addition, the _forward_ proxy for mutual TLS with the upstream "Broker server
 
 
 ##### ETL API
+---------
 
 Here are multiple possibilities to secure this sub-API.
 
 **Mutual TLS**
 
 As shown in the above system overview diagram, access to the ETL API could be secured by [mutual TLS](https://docs.nginx.com/nginx/admin-guide/security-controls/securing-http-traffic-upstream/).
-For this, you would add a correponding check
+For this, you would add a correponding check:
 ```nginx
 
   ...
@@ -217,17 +220,13 @@ For this, you would add a correponding check
   }
 
 ```
-However, whereas the validity of client certificates for mutual TLS on the peer-to-peer API (see above) is checked against the DNPM CA, you would use an internal CA here.
-
-Alternatively, you can white-list only the certificate used by the ETL setup:
-
+However, whereas the validity of client certificates for mutual TLS on the peer-to-peer API (see above) is checked against the DNPM CA, you would use an internal CA here, or alternatively, white-list only the certificate used by the ETL setup:
 ```nginx
   ...
   ssl_client_certificate   /etc/ssl/certs/client-cert.pem;  # Client certificate(s) white-list 
   ssl_verify_client        on;
   ssl_verify_depth         0;
 ```
-
 
 **HTTP Basic Authentication**
 
