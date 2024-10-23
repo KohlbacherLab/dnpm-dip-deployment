@@ -143,7 +143,7 @@ Provide these by either _overwriting_ the respective files in `.certs`, or simpl
 >| `./certs/dnpm-ca-cert.pem`     | Certificate of the DNPM CA from which the client certificates originate (for client verification in mutual TLS) |
 
 
-####❗ Securing Backend APIs
+#### :exclamation: Securing Backend APIs
 
 Some of the backend's API endpoints meant to be accessed by "system agents" instead of users via their browser are not protected by a login-based mechanism, and MUST be secured by other means.
 
