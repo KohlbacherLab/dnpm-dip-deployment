@@ -39,7 +39,7 @@ This deployment comes with dummy SSL certificates to be runnable out-of-the-box 
   Change permissions on that directory with `chmod -R 777 ./backend-data`
 - Run `docker compose up`
 
-This starts the components with the system's NGINX proxy running on `localhost:80` (and localhost:443 with the provided dummy SSL certificate).
+This starts the components with the system's NGINX proxy running on `localhost:80`and `localhost:443` with the provided dummy SSL certificate.
 
 
 Default login credentials: `admin / start123`
@@ -105,7 +105,7 @@ The `init.sh` script creates non-template local copies of these in `nginx/sites-
 | `nginx/sites-enabled/tls-reverse-proxy.conf` | Reverse Proxy using HTTPS (using provided dummy certificate)      |
 | `nginx/sites-enabled/forward-proxy.conf`     | Forward Proxy for outgoing requests to DNPM:DIP peers             |
 
-Aside from this, `certs` contains the provided default certificates:
+Aside from this, `./certs` contains the provided default certificates:
 
 | File                      | Meaning                                                           | 
 |---------------------------|-------------------------------------------------------------------|
@@ -116,7 +116,7 @@ Aside from this, `certs` contains the provided default certificates:
 
 This is bound to directory `/etc/ssl/certs` of the `nginx` container, to which certificates file paths in the configurations are pointing.
 
-From this default set-up, you can make local customizations by adapting the respectve files or removing them from `site-enabled` altogether, as shown in the following examples.
+From this default set-up, you can make local customizations by adapting the respecitve files or removing them from `site-enabled`, as shown in the following examples.
 
 > **NOTE for NGINX experts**
 >
@@ -133,7 +133,7 @@ In a production setup, you will probably want to have the reverse proxy using on
 #### Real Server and Client certificates
 
 In production, you must provide you real server certificate and key, and in case your site uses the "NGINX Broker" for cross-site communication, also the client certificate and key for mutual TLS.
-Provide these by either _overwriting_ the respective files in `.certs`, or simply adding these to `certs` and _adapting_ the file paths in `tls-reverse-proxy.conf` and `forward-proxy.conf`.
+Provide these by either _overwriting_ the respective files in `./certs`, or simply adding these to `./certs` and _adapting_ the file paths in `tls-reverse-proxy.conf` and `forward-proxy.conf`.
 
 > **NOTE**: Please do not overwrite the following certificate files:
 >
@@ -158,7 +158,7 @@ The following sections describe available options for the respective sub-API.
 ##### Peer-to-Peer API
 ---------
 
-The setup varies depending on whether your site is connected to the "NGINX Broker" with inbound HTTPS or outbound-only HTTPS with the MIRACUM Polling Module, and whether you are connected to the Samply Broker.
+The setup varies depending on whether your site is connected to the "NGINX Broker" with inbound HTTPS or outbound-only HTTPS with the MIRACUM Polling Module, or whether you are connected to the Samply Broker.
 
 **Case: NGINX Broker with inbound HTTPS**
 
@@ -189,7 +189,7 @@ In this case, given that the "peer-to-peer API" is not directly exposed to incom
 
 **Case: Samply Beam Connect**
 
-This case is similar to the above one: the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via Samply Beam Connect, the mutual TLS check might be discarded altogether. 
+This case is similar to the above one: the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via Samply Beam Connect, so the mutual TLS check might be discarded altogether. 
 
 In addition, the _forward_ proxy for mutual TLS with the upstream "Broker server" is also not required, so you would also remove `.../sites-enabled/forward-proxy.conf` and adapt the base URL in the backend's connector configuration (see below) to point to Samply Beam Connect.
 
@@ -301,4 +301,9 @@ If desired, you can override the request time-out (seconds), and in case you pre
 The connector based on a peer-to-peer network topology, i.e. with direct connections among DNPM:DIP nodes. (Provided only for potential backward compatibility with the "bwHealthCloud" infrastructure).
 
 In this case, each external peer's Site ID, Name, and BaseURL must be configured in a dedicated element, as shown in the [template](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/master/backend-config/config.template.xml#L15).
+
+
+## Further Links
+
+* DNPM:DIP Backend: [REST API Docs](https://github.com/KohlbacherLab/dnpm-dip-api-gateway/blob/main/app/controllers/README.md)
 
