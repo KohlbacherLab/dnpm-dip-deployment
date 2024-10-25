@@ -47,13 +47,6 @@ Default login credentials: `admin / start123`
 
 ## Detailed Set-up
 
-> ⚠️ **WARNING**
-> 
-> Please avoid making local changes to the versioned files in this repo (e.g. `docker-compose.yml`, `nginx.conf` or all `*.template.*`) 
-> to avoid conflicts upon subsequent pulls on the repository. 
-> All necessary configurations should rather occur via the non-versioned, non-template copies of respective files.
-
-
 ### Template Files 
 
 Templates are provided for all configuration files.
@@ -64,6 +57,12 @@ Templates are provided for all configuration files.
 - `.env.template`
 
 The provided `init.sh` script creates non-template copies of these for you to adapt locally, e.g. `./backend-config/config.template.xml -> ./backend-config/config.xml`. 
+
+> ⚠️ **WARNING**
+> 
+> Please avoid making local changes to the versioned files in this repo (e.g. `docker-compose.yml`, `nginx.conf` or all `*.template.*`) 
+> to avoid conflicts upon subsequent pulls on the repository. 
+> All necessary configurations should rather occur via the non-versioned, non-template copies of respective files.
 
 
 The following sections describe the meaning and necessary adaptations to the respective configuration files for customization of the setup.
@@ -105,6 +104,12 @@ The `init.sh` script creates non-template local copies of these in `nginx/sites-
 | `nginx/sites-enabled/tls-reverse-proxy.conf` | Reverse Proxy using HTTPS (using provided dummy certificate)      |
 | `nginx/sites-enabled/forward-proxy.conf`     | Forward Proxy for outgoing requests to DNPM:DIP peers             |
 
+> **NOTE for NGINX experts**
+>
+> Although the usual procedure is to keep configs in `sites-available` and activate them using symbolic links in `sites-enabled`, we couldn't yet get this to work with the bound local directory.
+> Hence the copying of actual config files in `sites-enabled`.
+> This might be eventually corrected.
+
 Aside from this, `./certs` contains the provided default certificates:
 
 | File                      | Meaning                                                           | 
@@ -117,12 +122,6 @@ Aside from this, `./certs` contains the provided default certificates:
 This is bound to directory `/etc/ssl/certs` of the `nginx` container, to which certificates file paths in the configurations are pointing.
 
 From this default set-up, you can make local customizations by adapting the respecitve files or removing them from `site-enabled`, as shown in the following examples.
-
-> **NOTE for NGINX experts**
->
-> Although the usual procedure is to keep configs in `sites-available` and activate them using symbolic links in `sites-enabled`, we couldn't yet get this to work with the bound local directory.
-> Hence the copying of actual config files in `sites-enabled`.
-> This might be eventually corrected.
 
 
 #### HTTPS only
