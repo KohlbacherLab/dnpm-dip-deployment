@@ -93,7 +93,12 @@ As shown in the system overview diagram above, the backend and frontend componen
 In a production setting, this would handle TLS termination (including mutual TLS for API endpoints not secured by a login mechanism).
 Also, unless your site uses the Samply infrastructure, a forward proxy is required to handle the client certificate for mutual TLS on requests to the "NGINX Broker" (see below about the Backend Connector).
 
-The default set-up uses NGINX.
+The default set-up uses NGINX as (reverse) proxy server.
+
+> **NOTE**: [Traefik](https://traefik.io/traefik/) could also be considered for this purpose. However, unless your site uses the Samply infrastructure,
+> the used web server must also be able to operate as a _forward_ proxy -- whereas Traefik only works as a _reverse_ proxy.
+> But feel free to contribute a Traefik-based configuration for cases in which the mentioned _forward_ proxying is not required.
+
 
 Template configuration files for the respective proxy servers are in `nginx/sites-available`. 
 The `init.sh` script creates non-template local copies of these in `nginx/sites-enabled`:
