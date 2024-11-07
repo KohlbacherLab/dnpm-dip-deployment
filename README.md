@@ -35,8 +35,6 @@ This deployment comes with dummy SSL certificates to be runnable out-of-the-box 
 
 - Pull this repository
 - Run `./init.sh`
-- Ensure the backend application has correct permissions on directory `backend-data` in which it will store its data and log files. 
-  Change permissions on that directory with `chmod -R 777 ./backend-data`
 - Run `docker compose up`
 
 This starts the components with the system's NGINX proxy running on `localhost:80`and `localhost:443` with the provided dummy SSL certificate.
@@ -271,10 +269,7 @@ http.parser.maxMemoryBuffer=10MB
 -------
 #### Persistence
 
-Persistence by the backend uses the file system, in directory `./backend-data` which is bound to the `backend` service's volume `/dnpm_data`. 
-
-Ensure the `backend` container has correct permissions on this directory, in which it will store its data and log files.
-Change permissions on that directory with `chmod -R 777 ./backend-data`.
+Persistence by the backend uses docker volume `backend-data`. 
 
 -------
 #### Logging
