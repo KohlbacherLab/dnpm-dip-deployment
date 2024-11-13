@@ -102,7 +102,7 @@ networks:
   dnpm:
     driver: bridge
     driver_opts:
-      com.docker.network.bridge.name: ${NETWORK_SUBNET:-172.50.1.0/24}
+      com.docker.network.bridge.name: ${NETWORK_NAME:-dnpm}
     ipam:
       driver: default
       config:
