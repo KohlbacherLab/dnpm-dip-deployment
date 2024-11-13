@@ -47,7 +47,7 @@ services:
       dnpm:
 
   portal:
-    image: ghcr.io/kohlbacherlab/dnpm-dip-portal:latest
+    image: ghcr.io/kohlbacherlab/dnpm-dip-portal:${FRONTEND_IMAGE_TAG:-latest}
     pull_policy: ${PULL_POLICY:-always}
     container_name: portal
     restart: unless-stopped
@@ -61,7 +61,7 @@ services:
 
   backend:
     container_name: backend
-    image: ghcr.io/kohlbacherlab/dnpm-dip-backend:latest
+    image: ghcr.io/kohlbacherlab/dnpm-dip-backend:${BACKEND_IMAGE_TAG:-latest}
     pull_policy: ${PULL_POLICY:-always}
     restart: unless-stopped
     environment:
