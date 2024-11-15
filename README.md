@@ -18,7 +18,7 @@ Due to a minor but breaking change in API URI paths, the local NGINX reverse pro
 Please perform one of the following:
 
 * If you are using the essentially unadapted reverse proxy configs, please remove the local copies and run `init.sh` again to create up-to-date copies
-* If you already have too many local adaptations, please adapt the `location` blocks for backend API calls accoring to the templates:
+* If you already have too many local adaptations, please adapt the `location` blocks for backend API calls according to the templates:
     * Reverse proxy: see [here](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/8ac8ddf0caaf9d826994835530a4efc4b3fa8905/nginx/sites-available/reverse-proxy.template.conf#L24-L30)
     * TLS reverse proxy: see [here](https://github.com/KohlbacherLab/dnpm-dip-deployment/blob/8ac8ddf0caaf9d826994835530a4efc4b3fa8905/nginx/sites-available/tls-reverse-proxy.template.conf#L39-L45)
     * :warning: Note the trailing slashes in both `location /api/ { ... }` entries
