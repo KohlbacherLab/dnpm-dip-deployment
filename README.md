@@ -264,7 +264,10 @@ These files are expected by the application in the directory `./backend-config` 
 The Play HTTP Server in which the backend application runs is configured via file `./backend-config/production.conf`.
 The template provides defaults for all required settings.
 
-In case the backend won't be addressed via a reverse proxy forwarding to 'localhost' but directly by IP and/or hostname, these "allowed hosts" must be configured explicitly:
+##### Allowed Hosts
+
+Given that the backend service is operated behind the reverse proxy and not exposed directly, the [Allowed hosts filter](https://www.playframework.com/documentation/3.0.x/AllowedHostsFilter) is disabled by default.
+In case you were to deviate from this setup and directly expose the backend service, you should consider re-activateing this filter and configure the necessary allowed hosts accordingly:
 
 ```bash
 ...
@@ -272,8 +275,7 @@ hosts {
   allowed = ["your.host.name",...]
 }
 ```
-See also the [Allowed Hosts Filter Documentation](https://www.playframework.com/documentation/3.0.x/AllowedHostsFilter).
-
+##### Payload size
 
 Depending on the expected size of data uploads, the memory buffer can also be adjusted, e.g.:
 
