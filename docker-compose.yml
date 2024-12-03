@@ -47,7 +47,7 @@ services:
       dnpm:
 
   portal:
-    image: ghcr.io/kohlbacherlab/dnpm-dip-portal:${PORTAL_IMAGE_TAG:-latest}
+    image: ghcr.io/dnpm-dip/portal:${PORTAL_IMAGE_TAG:-latest}
     pull_policy: ${PULL_POLICY:-always}
     restart: unless-stopped
     environment:
