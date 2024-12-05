@@ -248,13 +248,14 @@ Alternatively, access to the ETL API can be secured using HTTP Basic Authenticat
 #### Forward Proxy
 
 As mentioned above, TLS connections from the DNPM:DIP backend to the broker are handled by a forward proxy configured via `nginx/sites-enabled/forward-proxy.conf`. 
+
 Adapt the hostname of the broker server in this file, especially in case your site uses the Samply Infrastructure, in order to point to your local Samply Beam Connect server.
 
 > :warning: **NOTE**:
 > In the template config file, the default activated `location` block uses _dynamic_ resolution of the defined upstream server.
 > This is due to the fact that in the simpler case that's below, where a `proxy_pass` directive is used, the NGINX tries to check whether the configured upstream
 > is reachable _upon start-up_ and when this fails, the NGINX service fails to start altogether. This issue is avoided with the default configuration using dynamic resolution,
-> but at the advantage that this setup might also lead to errors of the form "no resolver defined to resolve ...", which requires configuring a `resolver` (see the template).
+> but at the disadvantage that this setup might also lead to errors of the form "no resolver defined to resolve ...", which requires configuring a `resolver` (see the template).
 >
 > Ideally, once the connection between the DNPM:DIP node setup and broker server (i.e. either thr "NGINX Broker" or Samply Beam Proxy) is possible, you should activate
 > the second `location` block commented by default.
