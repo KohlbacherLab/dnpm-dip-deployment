@@ -101,18 +101,14 @@ Basic configuration occurs via environment variables in file `.env`.
 | `BACKEND_MTB_RANDOM_DATA` |       ❌       | Set to a positive integer to activate in-memory generation of Mol. Tumor Board (MTB) random data (for test purposes)                                                                                                                                       |
 
 -------
-### Reverse/Forward Proxy
+### Proxy Setup
 
 As shown in the system overview diagram above, the backend and frontend components are operated behind a reverse proxy.
 In a production setting, this would handle TLS termination (including mutual TLS for API endpoints not secured by a login mechanism).
-Also, unless your site uses the Samply infrastructure, a forward proxy is required to handle the client certificate for mutual TLS on requests to the "NGINX Broker" (see below about the Backend Connector).
+Also, unless your site were to use the Samply infrastructure with plain HTTP connection between Samply Proxy and DNPM:DIP backend, a forward proxy
+is required to handle TLS to the broker server, and in case of the NGINX broker also the client certificate for mutual TLS (see below about the Backend Connector).
 
 The default set-up uses NGINX as (reverse) proxy server.
-
-> **NOTE**: [Traefik](https://traefik.io/traefik/) could also be considered for this purpose. However, unless your site uses the Samply infrastructure,
-> the used web server must also be able to operate as a _forward_ proxy -- whereas Traefik only works as a _reverse_ proxy.
-> But feel free to contribute a Traefik-based configuration for cases in which the mentioned _forward_ proxying is not required.
-
 
 Template configuration files for the respective proxy servers are in `nginx/sites-available`. 
 The `init.sh` script creates non-template local copies of these in `nginx/sites-enabled`:
@@ -209,8 +205,6 @@ In this case, given that the "peer-to-peer API" is not directly exposed to incom
 
 This case is similar to the above one: the "peer-to-peer API" is not directly exposed to incoming requests from the broker, but reached indirectly via Samply Beam Connect, so the mutual TLS check might be discarded altogether. 
 
-In addition, the _forward_ proxy for mutual TLS with the upstream "Broker server" is also not required, so you would also remove `.../sites-enabled/forward-proxy.conf` and adapt the base URL in the backend's connector configuration (see below) to point to Samply Beam Connect.
-
 
 ##### ETL API
 ---------
@@ -249,6 +243,21 @@ However, whereas the validity of client certificates for mutual TLS on the peer-
 **HTTP Basic Authentication**
 
 Alternatively, access to the ETL API can be secured using HTTP Basic Authentication, as described in [the NGINX docs](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/). 
+
+
+#### Forward Proxy
+
+As mentioned above, TLS connections from the DNPM:DIP backend to the broker are handled by a forward proxy configured via `nginx/sites-enabled/forward-proxy.conf`. 
+Adapt the hostname of the broker server in this file, especially in case your site uses the Samply Infrastructure, in order to point to your local Samply Beam Connect server.
+
+> :warning: **NOTE**:
+> In the template config file, the default activated `location` block uses _dynamic_ resolution of the defined upstream server.
+> This is due to the fact that in the simpler case that's below, where a `proxy_pass` directive is used, the NGINX tries to check whether the configured upstream
+> is reachable _upon start-up_ and when this fails, the NGINX service fails to start altogether. This issue is avoided with the default configuration using dynamic resolution,
+> but at the advantage that this setup might also lead to errors of the form "no resolver defined to resolve ...", which requires configuring a `resolver` (see the template).
+>
+> Ideally, once the connection between the DNPM:DIP node setup and broker server (i.e. either thr "NGINX Broker" or Samply Beam Proxy) is possible, you should activate
+> the second `location` block commented by default.
 
 
 -------
